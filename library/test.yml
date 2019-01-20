@@ -5,7 +5,7 @@ parameters:
 
 steps:
 - ${{ if eq(parameters.frameworkGlobal, 'false') }}:
-  - script: ${{ format('~/.dotnet/dotnet test -f {0} --no-build --logger trx -c Release {1}', parameters.framework, parameters.path) }}
+  - script: ${{ format('~/.dotnet/dotnet test -f {0} --no-build --logger trx /property:CollectCoverage=true /property:CoverletOutputFormat=cobertura /property:CoverletOutput=$(Build.SourcesDirectory)/results/ /property:UseSourceLink=true -c Release {1}', parameters.framework, parameters.path) }}
     displayName: ${{ format('dotnet test -f {0} *nix', parameters.framework) }}
     condition: ne(variables['Agent.OS'], 'Windows_NT')
 
@@ -13,7 +13,7 @@ steps:
     displayName: ${{ format('dotnet test -f {0} win', parameters.framework) }}
     inputs:
       targetType: inline
-      script: ${{ format('dotnet test -f {0} --no-build --logger trx -c Release {1}', parameters.framework, parameters.path) }}
+      script: ${{ format('dotnet test -f {0} --no-build --logger trx /property:CollectCoverage=true /property:CoverletOutputFormat=cobertura /property:CoverletOutput=$(Build.SourcesDirectory)/results/ /property:UseSourceLink=true -c Release {1}', parameters.framework, parameters.path) }}
     condition: eq(variables['Agent.OS'], 'Windows_NT')
 
 - ${{ if eq(parameters.frameworkGlobal, 'true') }}:
@@ -22,5 +22,5 @@ steps:
     inputs:
       command: test
       projects: ${{ parameters.path }}
-      arguments: ${{ format('--no-build -f {0} -c Release', parameters.framework) }}
+      arguments: ${{ format('--no-build -f {0} /property:CollectCoverage=true /property:CoverletOutputFormat=cobertura /property:CoverletOutput=$(Build.SourcesDirectory)/results/ /property:UseSourceLink=true -c Release', parameters.framework) }}
       publishTestResults: true

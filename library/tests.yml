@@ -59,3 +59,14 @@ steps:
   parameters:
     path: $(tests)
     framework: netcoreapp2.2
+
+- ${{ if eq(variables['Agent.OS'], 'Windows_NT') }}:
+  - script: |
+      dotnet tool install dotnet-reportgenerator-globaltool --tool-path . --version 4.0.7
+      .\reportgenerator "-reports:$(Build.SourcesDirectory)\results\coverage.cobertura.xml" "-targetdir:results" "-reporttypes:HTMLInline;HTMLChart"
+    displayName: 'Generating coverage reports'
+  - task: PublishCodeCoverageResults@1
+    inputs:
+      summaryFileLocation: $(Build.SourcesDirectory)\results\coverage.cobertura.xml
+      reportDirectory: $(Build.SourcesDirectory)\results
+    codecoverageTool: cobertura
