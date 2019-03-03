@@ -2,12 +2,12 @@ parameters:
   runDockerComposeBeforeTests: false
 
 steps:
-- ${{ if eq(parameters.runDockerComposeBeforeTests, 'true') }}:
-  - task: Bash@3
-    displayName: Running required services from docker-compose
-    inputs:
-      targetType: inline
-      script: docker-compose up -d
+- task: Bash@3
+  displayName: Launching required services from docker-compose
+  condition: eq(parameters.runDockerComposeBeforeTests, 'true')
+  inputs:
+    targetType: inline
+    script: docker-compose up -d
 
 - task: DotNetCoreCLI@2
   displayName: dotnet build
