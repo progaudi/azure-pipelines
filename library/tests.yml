@@ -4,6 +4,7 @@ parameters:
 steps:
 - ${{ if eq(parameters.runDockerComposeBeforeTests, 'true') }}:
   - task: Bash@3
+    displayName: Running required services from docker-compose
     inputs:
       targetType: inline
       script: docker-compose up -d
