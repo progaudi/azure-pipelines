@@ -2,12 +2,13 @@ parameters:
   runDockerComposeBeforeTests: false
 
 steps:
-- task: Bash@3
+- task: DockerCompose@0
   displayName: Launching required services from docker-compose
   condition: eq(variables.runDockerComposeBeforeTests, 'true')
   inputs:
-    targetType: inline
-    script: docker-compose up -d
+    action: Run services
+    dockerComposeFile: docker-compose.yml
+    detached: true
 
 - task: DotNetCoreCLI@2
   displayName: dotnet build
